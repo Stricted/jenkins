@@ -3,11 +3,9 @@ String calcDate() { ['date', '+%Y%m%d'].execute().text.trim()}
 def BUILD_TREE  = "/home/build/android/twrp/" + VERSION
 def CCACHE_DIR  = "/home/build/.ccache"
 
-def basejobname = DEVICE + '-' + VERSION + '-' + calcDate() + '-' + BUILD_TYPE
-
 node("build"){
   timestamps {
-    currentBuild.displayName = basejobname
+    currentBuild.displayName = 'twrp-' + DEVICE
 
     stage('Input manifest'){
       sh '''#!/bin/bash
