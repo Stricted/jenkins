@@ -10,7 +10,8 @@ node("master"){
     echo "Kicking off a build for ${json[i].device}"
     build job: 'twrp-build', parameters: [
       string(name: 'VERSION', value: (json[i].version == null) ? "7.1" : json[i].version),
-      string(name: 'DEVICE', value: (json[i].device == null) ? "HELP-omgwtfbbq" : json[i].device)
+      string(name: 'DEVICE', value: (json[i].device == null) ? "HELP-omgwtfbbq" : json[i].device),
+      string(name: 'CLEAN', value: "true")
     ], propagate: false, wait: false
     sleep 2
   }

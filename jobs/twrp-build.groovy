@@ -24,10 +24,17 @@ node("build"){
       '''
     }
     stage('Clean'){
-      sh '''#!/bin/bash
-        cd '''+BUILD_TREE+'''
-        make clean
-      '''
+      if(CLEAN == 'true'){
+        sh '''#!/bin/bash
+          cd '''+BUILD_TREE+'''
+          make clean
+        '''
+      }
+      else {
+        sh '''#!/bin/bash
+          echo "skip cleaning";
+        '''
+      }
     }
     stage('Build'){
       sh '''#!/bin/bash +e
