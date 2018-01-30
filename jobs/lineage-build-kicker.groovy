@@ -10,14 +10,6 @@ def global_repopick_tops = null
 node("master"){
   def json = jsonParse(getDevices())
   for(int i = 0; i < json.size(); i++) {
-    if(device) {
-      if(device != json[i].device) {
-        if(version != json[i].version) {
-          continue
-        }
-        continue
-      }
-    }
     if(json[i].device == "GLOBAL") {
       global_repopick_nums = json[i].repopick_nums
       global_repopick_tops = json[i].repopick_tops
@@ -36,7 +28,7 @@ node("master"){
       string(name: 'WITH_DEXPREOPT', value: (json[i].with_dexpreopt == null) ? "false" : json[i].with_dexpreopt),
       string(name: 'OTA', value: (json[i].ota == null) ? "true" : json[i].ota),
       string(name: 'SIGNED', value: (json[i].signed == null) ? "false" : json[i].signed),
-      string(name: 'SIGNED_BACKUPTOOL', value: (json[i].signed_backuptool == null) ? "true" : json[i].signed_backuptool),
+      string(name: 'SIGNED_BACKUPTOOL', value: (json[i].signed_backuptool == null) ? "true" : json[i].signed_backuptool)
     ], propagate: false, wait: false
     sleep 2
   }
