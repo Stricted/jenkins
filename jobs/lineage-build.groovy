@@ -26,7 +26,7 @@ node("the-revenge"){
         cd '''+BUILD_TREE+'''
         rm -rf .repo/local_manifests
         mkdir .repo/local_manifests
-		curl --silent "https://raw.githubusercontent.com/Stricted/jenkins/Stricted/resources/manifests/$VERSION/$DEVICE.xml" > .repo/local_manifests/roomservice.xml
+        curl --silent "https://raw.githubusercontent.com/Stricted/jenkins/Stricted/resources/manifests/$VERSION/$DEVICE.xml" > .repo/local_manifests/roomservice.xml
       '''
     }
     stage('Sync'){
@@ -105,8 +105,8 @@ node("the-revenge"){
         ./prebuilts/sdk/tools/jack-admin list-server && ./prebuilts/sdk/tools/jack-admin kill-server
       '''
     }
-    if(SIGNED == 'true'){
-      stage('Sign build'){
+    stage('Sign build'){
+      if(SIGNED == 'true'){
         sh '''#!/bin/bash
           set -e
           cd '''+BUILD_TREE+'''
@@ -121,35 +121,42 @@ node("the-revenge"){
             out/target/product/$DEVICE/lineage-$VERSION-$(date +%Y%m%d)-UNOFFICIAL-$DEVICE-signed.zip
         '''
       }
+      else {
+        sh '''#!/bin/bash
+          echo "skip signing";
+        '''
+      }
     }
-    stage('Upload to Jenkins'){
-      sh '''#!/bin/bash
-        set -e
-        if ! [[ $OTA = 'true' || $BOOT_IMG_ONLY = 'true' ]]; then
-          cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/lineage-$VERSION-* .
-        fi
-        if [ $BOOT_IMG_ONLY = 'true' ]; then
-          cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/boot.img .
-        else
-          cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/installed-files.txt .
-        fi
-        cp '''+BUILD_TREE+'''/manifests/$DEVICE-$(date +%Y%m%d)-manifest.xml .
-      '''
-      archiveArtifacts artifacts: '*'
-      sh '''#!/bin/bash
-        rm *
-      '''
-    }
-    stage('Upload to www'){
-      sh '''#!/bin/bash
-        if [ $OTA = 'true' ]; then
-          zipname=$(find '''+BUILD_TREE+'''/out/target/product/$DEVICE/ -name 'lineage-'$VERSION'-*.zip' -type f -printf "%f\\n")
-          ssh root@builder.harryyoud.co.uk mkdir -p /srv/www/builder.harryyoud.co.uk/lineage/$DEVICE/'''+timestamp+'''/
-          scp '''+BUILD_TREE+'''/out/target/product/$DEVICE/$zipname root@builder.harryyoud.co.uk:/srv/www/builder.harryyoud.co.uk/lineage/$DEVICE/'''+timestamp+'''/
-        else
-          echo "Skipping as this is not a production build. Artifacts will be available in Jenkins"
-        fi
-      '''
+    stage('Upload'){
+      if(SIGNED == 'true'){
+        sh '''#!/bin/bash
+          if [ $OTA = 'true' ]; then
+            zipname=$(find '''+BUILD_TREE+'''/out/target/product/$DEVICE/ -name 'lineage-'$VERSION'-*.zip' -type f -printf "%f\\n")
+            ssh root@builder.harryyoud.co.uk mkdir -p /srv/www/builder.harryyoud.co.uk/lineage/$DEVICE/'''+timestamp+'''/
+            scp '''+BUILD_TREE+'''/out/target/product/$DEVICE/$zipname root@builder.harryyoud.co.uk:/srv/www/builder.harryyoud.co.uk/lineage/$DEVICE/'''+timestamp+'''/
+          else
+            echo "Skipping as this is not a production build. Artifacts will be available in Jenkins"
+          fi
+        '''
+      }
+      else {
+        sh '''#!/bin/bash
+          set -e
+          if ! [[ $OTA = 'true' || $BOOT_IMG_ONLY = 'true' ]]; then
+            cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/lineage-$VERSION-* .
+          fi
+          if [ $BOOT_IMG_ONLY = 'true' ]; then
+            cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/boot.img .
+          else
+            cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/installed-files.txt .
+          fi
+          cp '''+BUILD_TREE+'''/manifests/$DEVICE-$(date +%Y%m%d)-manifest.xml .
+        '''
+        archiveArtifacts artifacts: '*'
+        sh '''#!/bin/bash
+          rm *
+        '''
+      }
     }
     stage('Add to updater'){
       withCredentials([string(credentialsId: '3ad6afb4-1f2a-45e9-94c7-b2b511f81d50', variable: 'UPDATER_API_KEY')]) {
