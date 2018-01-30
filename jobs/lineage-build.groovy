@@ -119,7 +119,7 @@ node("build"){
       }
     }
     stage('Upload'){
-      if(SIGNED == 'true'){
+      if(OTA == 'true'){
         sh '''#!/bin/bash
           if [ $OTA = 'true' ]; then
             zipname=$(find '''+BUILD_TREE+'''/out/target/product/$DEVICE/ -name 'lineage-'$VERSION'-*.zip' -type f -printf "%f\\n")
