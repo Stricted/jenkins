@@ -1,7 +1,6 @@
 String calcDate() { ['date', '+%Y%m%d'].execute().text.trim()}
 String calcTimestamp() { ['date', '+%s'].execute().text.trim()}
 
-def MIRROR_TREE = "/mnt/Data/AndroidMirror"
 def BUILD_TREE  = "/mnt/Android/lineage/" + VERSION
 def CCACHE_DIR  = "/mnt/Android/ccache"
 def CERTS_DIR   = "/mnt/Android/certs"
@@ -21,16 +20,6 @@ node("the-revenge"){
     }
     if(BOOT_IMG_ONLY == 'true') {
       OTA = false
-    }
-    stage('Sync mirror'){
-      sh '''#!/bin/bash
-        if [ $CRON_RUN = 'true' ]; then
-          echo "Automatic run, so mirror sync has already been done"
-        else
-          cd '''+MIRROR_TREE+'''
-          repo sync -j32
-        fi
-      '''
     }
     stage('Input manifest'){
       sh '''#!/bin/bash
