@@ -24,7 +24,7 @@ node("build"){
         cd '''+BUILD_TREE+'''
         rm -rf .repo/local_manifests
         mkdir .repo/local_manifests
-        curl --silent "https://raw.githubusercontent.com/Stricted/jenkins/Stricted/resources/manifests/$VERSION/$DEVICE.xml" > .repo/local_manifests/roomservice.xml
+        curl --silent "https://raw.githubusercontent.com/Stricted/jenkins/Stricted/resources/manifests/lineage-$VERSION/$DEVICE.xml" > .repo/local_manifests/roomservice.xml
       '''
     }
     stage('Sync'){

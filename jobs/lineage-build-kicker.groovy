@@ -1,6 +1,6 @@
 import groovy.json.JsonSlurper
 
-String getDevices() { ['curl', '-s', 'https://raw.githubusercontent.com/Stricted/jenkins/Stricted/resources/lineage-targets.json'].execute().text }
+String getDevices() { ['curl', '-s', 'https://raw.githubusercontent.com/Stricted/jenkins/Stricted/lineage-targets.json'].execute().text }
 
 def jsonParse(def json) { new groovy.json.JsonSlurperClassic().parseText(json) }
 
