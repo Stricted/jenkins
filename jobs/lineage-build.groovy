@@ -29,14 +29,10 @@ node("build"){
     }
     stage('Sync'){
       sh '''#!/bin/bash
+        set +x
         cd '''+BUILD_TREE+'''
-        repo forall -c "git reset --hard"
-        repo forall -c "git clean -f -d"
+        export GIT_SSH_COMMAND="ssh -o ControlPath=none"
         repo sync -d -c -j128 --force-sync
-        repo forall -c "git reset --hard"
-        repo forall -c "git clean -f -d"
-        . build/envsetup.sh
-        breakfast lineage_$DEVICE-$BUILD_TYPE || breakfast cm_$DEVICE-$BUILD_TYPE
       '''
     }
     stage('Repopicks'){
