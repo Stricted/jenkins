@@ -26,7 +26,7 @@ node("the-revenge"){
         cd '''+BUILD_TREE+'''
         rm -rf .repo/local_manifests
         mkdir .repo/local_manifests
-        curl --silent "https://raw.githubusercontent.com/harryyoud/jenkins/master/resources/manifest-$VERSION.xml" > .repo/local_manifests/roomservice.xml
+		curl --silent "https://raw.githubusercontent.com/Stricted/jenkins/Stricted/resources/manifests/$VERSION/$DEVICE.xml" > .repo/local_manifests/roomservice.xml
       '''
     }
     stage('Sync'){
@@ -39,14 +39,6 @@ node("the-revenge"){
         repo forall -c "git clean -f -d"
         . build/envsetup.sh
         breakfast lineage_$DEVICE-$BUILD_TYPE || breakfast cm_$DEVICE-$BUILD_TYPE
-      '''
-    }
-    stage('Output manifest'){
-      sh '''#!/bin/bash
-        cd '''+BUILD_TREE+'''
-        rm -r manifests
-        mkdir -p manifests
-        repo manifest -r -o manifests/$DEVICE-$(date +%Y%m%d)-manifest.xml
       '''
     }
     stage('Repopicks'){
