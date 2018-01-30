@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <!-- OMS -->
+  <project name="Stricted/android_vendor_extra" path="vendor/extra" remote="github" revision="cm-14.1" />
+  <project name="substratum/interfacer" path="packages/apps/ThemeInterfacer" remote="github" revision="n-rootless" />
+</manifest>
