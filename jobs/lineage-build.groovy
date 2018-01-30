@@ -22,17 +22,6 @@ node("the-revenge"){
     if(BOOT_IMG_ONLY == 'true') {
       OTA = false
     }
-    if(VERSION == '11') {
-      OTA = false
-      WITH_DEXPREOPT = false
-      WITH_GAPPS = false
-      WITH_OMS = false
-      WITH_SU = false
-    }
-    if(VERSION == '13.0') {
-      WITH_GAPPS = false
-      WITH_OMS = false
-    }
     stage('Sync mirror'){
       sh '''#!/bin/bash
         if [ $CRON_RUN = 'true' ]; then
@@ -121,30 +110,18 @@ node("the-revenge"){
         export USE_CCACHE=1
         export CCACHE_COMPRESS=1
         export CCACHE_DIR='''+CCACHE_DIR+'''
-        if [[ $VERSION = '11' ]]; then
-          cd vendor/cm
-          ./get-prebuilts
-          cd ../..
-          export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre/
-          export JDK_HOME=/usr/lib/jvm/java-7-openjdk-amd64/
-          export PATH=$JDK_HOME/bin:$JAVA_HOME:$PATH
-        fi
         lunch lineage_$DEVICE-$BUILD_TYPE || lunch cm_$DEVICE-$BUILD_TYPE
-        if [[ $VERSION = '14.1' ]] || [[ $VERSION = '15.1' ]]; then
-          ./prebuilts/sdk/tools/jack-admin list-server && ./prebuilts/sdk/tools/jack-admin kill-server
-          rm -rf ~/.jack*
-          ./prebuilts/sdk/tools/jack-admin install-server ./prebuilts/sdk/tools/jack-launcher.jar ./prebuilts/sdk/tools/jack-server-*.jar
-          export JACK_SERVER_VM_ARGUMENTS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx6g"
-          ./prebuilts/sdk/tools/jack-admin start-server
-        fi
+        ./prebuilts/sdk/tools/jack-admin list-server && ./prebuilts/sdk/tools/jack-admin kill-server
+        rm -rf ~/.jack*
+        ./prebuilts/sdk/tools/jack-admin install-server ./prebuilts/sdk/tools/jack-launcher.jar ./prebuilts/sdk/tools/jack-server-*.jar
+        export JACK_SERVER_VM_ARGUMENTS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx6g"
+        ./prebuilts/sdk/tools/jack-admin start-server
         if [ $BOOT_IMG_ONLY = 'true' ]; then
           mka bootimage
         else
           mka bacon
         fi
-        if [[ $VERSION = '14.1' ]] || [[ $VERSION = '15.1' ]]; then
-          ./prebuilts/sdk/tools/jack-admin list-server && ./prebuilts/sdk/tools/jack-admin kill-server
-        fi
+        ./prebuilts/sdk/tools/jack-admin list-server && ./prebuilts/sdk/tools/jack-admin kill-server
       '''
     }
     if(SIGNED == 'true'){
@@ -185,13 +162,9 @@ node("the-revenge"){
     stage('Upload to www'){
       sh '''#!/bin/bash
         if [ $OTA = 'true' ]; then
-          if [[ ! $VERSION = '11' ]]; then
-            zipname=$(find '''+BUILD_TREE+'''/out/target/product/$DEVICE/ -name 'lineage-'$VERSION'-*.zip' -type f -printf "%f\\n")
-            ssh root@builder.harryyoud.co.uk mkdir -p /srv/www/builder.harryyoud.co.uk/lineage/$DEVICE/'''+timestamp+'''/
-            scp '''+BUILD_TREE+'''/out/target/product/$DEVICE/$zipname root@builder.harryyoud.co.uk:/srv/www/builder.harryyoud.co.uk/lineage/$DEVICE/'''+timestamp+'''/
-          else
-            echo "CM11 does not support OTAs using https://github.com/LineageOS/lineageos_updater"
-          fi
+          zipname=$(find '''+BUILD_TREE+'''/out/target/product/$DEVICE/ -name 'lineage-'$VERSION'-*.zip' -type f -printf "%f\\n")
+          ssh root@builder.harryyoud.co.uk mkdir -p /srv/www/builder.harryyoud.co.uk/lineage/$DEVICE/'''+timestamp+'''/
+          scp '''+BUILD_TREE+'''/out/target/product/$DEVICE/$zipname root@builder.harryyoud.co.uk:/srv/www/builder.harryyoud.co.uk/lineage/$DEVICE/'''+timestamp+'''/
         else
           echo "Skipping as this is not a production build. Artifacts will be available in Jenkins"
         fi
