@@ -1,9 +1,9 @@
 String calcDate() { ['date', '+%Y%m%d'].execute().text.trim()}
 String calcTimestamp() { ['date', '+%s'].execute().text.trim()}
 
-def BUILD_TREE  = "/mnt/Android/lineage/" + VERSION
-def CCACHE_DIR  = "/mnt/Android/ccache"
-def CERTS_DIR   = "/mnt/Android/certs"
+def BUILD_TREE  = "/home/build/android/lineage/" + VERSION
+def CCACHE_DIR  = "/home/build/.ccache"
+def CERTS_DIR   = "/home/buildtest/.android-certs"
 
 def basejobname = DEVICE + '-' + VERSION + '-' + calcDate() + '-' + BUILD_TYPE
 def timestamp = calcTimestamp()
