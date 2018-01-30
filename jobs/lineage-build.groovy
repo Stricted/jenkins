@@ -1,14 +1,12 @@
 String calcDate() { ['date', '+%Y%m%d'].execute().text.trim()}
-String calcTimestamp() { ['date', '+%s'].execute().text.trim()}
 
 def BUILD_TREE  = "/home/build/android/lineage/" + VERSION
 def CCACHE_DIR  = "/home/build/.ccache"
 def CERTS_DIR   = "/home/buildtest/.android-certs"
 
 def basejobname = DEVICE + '-' + VERSION + '-' + calcDate() + '-' + BUILD_TYPE
-def timestamp = calcTimestamp()
 
-node("the-revenge"){
+node("build"){
   timestamps {
     if(SIGNED == 'true') {
       basejobname = basejobname + '-signed'
@@ -132,8 +130,8 @@ node("the-revenge"){
         sh '''#!/bin/bash
           if [ $OTA = 'true' ]; then
             zipname=$(find '''+BUILD_TREE+'''/out/target/product/$DEVICE/ -name 'lineage-'$VERSION'-*.zip' -type f -printf "%f\\n")
-            ssh root@builder.harryyoud.co.uk mkdir -p /srv/www/builder.harryyoud.co.uk/lineage/$DEVICE/'''+timestamp+'''/
-            scp '''+BUILD_TREE+'''/out/target/product/$DEVICE/$zipname root@builder.harryyoud.co.uk:/srv/www/builder.harryyoud.co.uk/lineage/$DEVICE/'''+timestamp+'''/
+            ssh web52@stricted.net mkdir -p /var/www/web52/htdocs/lineageos/$DEVICE/
+            scp '''+BUILD_TREE+'''/out/target/product/$DEVICE/$zipname web52@stricted.net:/var/www/web52/htdocs/lineageos/$DEVICE/
           else
             echo "Skipping as this is not a production build. Artifacts will be available in Jenkins"
           fi
@@ -159,13 +157,15 @@ node("the-revenge"){
       }
     }
     stage('Add to updater'){
-      withCredentials([string(credentialsId: '3ad6afb4-1f2a-45e9-94c7-b2b511f81d50', variable: 'UPDATER_API_KEY')]) {
+      withCredentials([string(credentialsId: '16c4643c-0dfb-4f0d-ad8a-54acccae6785', variable: 'UPDATER_API_KEY')]) {
         sh '''#!/bin/bash
           cd '''+BUILD_TREE+'''/out/target/product/$DEVICE
           if [ $OTA = 'true' ]; then
+            LineageUpdaterURL="https://lineage.stricted.net"
+            DownloadBaseURL="https://images.stricted.net/lineageos"
             zipname=$(find -name "lineage-$VERSION-*.zip" -type f -printf '%f\n')
             md5sum=$(md5sum $zipname)
-            curl -H "Apikey: $UPDATER_API_KEY" -H "Content-Type: application/json" -X POST -d '{ "device": "'"$DEVICE"'", "filename": "'"$zipname"'", "md5sum": "'"${md5sum:0:32}"'", "romtype": "unofficial", "url": "'"http://builder.harryyoud.co.uk/lineage/$DEVICE/'''+timestamp+'''/$zipname"'", "version": "'"14.1"'" }' "https://lineage.harryyoud.co.uk/api/v1/add_build"
+            curl -H "Apikey: $UPDATER_API_KEY" -H "Content-Type: application/json" -X POST -d '{ "device": "'"$DEVICE"'", "filename": "'"$zipname"'", "md5sum": "'"${md5sum:0:32}"'", "romtype": "unofficial", "url": "'"$DownloadBaseURL/$DEVICE/$zipname"'", "version": "'"$VERSION"'" }' "$LineageUpdaterURL/api/v1/add_build"
           fi
         '''
       }
