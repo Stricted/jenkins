@@ -47,28 +47,28 @@ node("the-revenge"){
         . build/envsetup.sh
         if ! [ -z $GLOBAL_REPOPICK_NUMBERS ]; then
           for rpnum in ${GLOBAL_REPOPICK_NUMBERS//,/ }; do
-            repopick -frg ssh://harryyoud@review.lineageos.org:29418 $rpnum
+            repopick -fr $rpnum
           done
         else
           echo "No global repopick numbers chosen"
         fi
         if ! [ -z $GLOBAL_REPOPICK_TOPICS ]; then
           for rptopic in ${GLOBAL_REPOPICK_TOPICS//,/ }; do
-            repopick -frg ssh://harryyoud@review.lineageos.org:29418 -t $rptopic
+            repopick -fr -t $rptopic
           done
         else
           echo "No global repopick topics chosen"
         fi
         if ! [ -z $REPOPICK_NUMBERS ]; then
           for rpnum in ${REPOPICK_NUMBERS//,/ }; do
-            repopick -frg ssh://harryyoud@review.lineageos.org:29418 $rpnum
+            repopick -fr $rpnum
           done
         else
           echo "No repopick numbers chosen"
         fi
         if ! [ -z $REPOPICK_TOPICS ]; then
           for rptopic in ${REPOPICK_TOPICS//,/ }; do
-            repopick -frg ssh://harryyoud@review.lineageos.org:29418 -t $rptopic
+            repopick -fr -t $rptopic
           done
         else
           echo "No repopick topics chosen"
