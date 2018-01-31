@@ -12,7 +12,11 @@ node("build"){
         cd '''+BUILD_TREE+'''
         rm -rf .repo/local_manifests
         mkdir .repo/local_manifests
-        curl --silent "https://raw.githubusercontent.com/Stricted/jenkins/Stricted/manifests/twrp-$VERSION/$DEVICE.xml" > .repo/local_manifests/roomservice.xml
+        if ! [[ -z "$MANIFEST" ]]; then
+          curl --silent "https://raw.githubusercontent.com/Stricted/jenkins/Stricted/manifests/twrp-$VERSION/$MANIFEST.xml" > .repo/local_manifests/roomservice.xml
+        else
+          curl --silent "https://raw.githubusercontent.com/Stricted/jenkins/Stricted/manifests/twrp-$VERSION/$DEVICE.xml" > .repo/local_manifests/roomservice.xml
+        fi
       '''
     }
     stage('Sync'){
