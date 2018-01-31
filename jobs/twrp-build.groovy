@@ -53,7 +53,7 @@ node("build"){
     stage('Upload'){
       sh '''#!/bin/bash
         set -e
-        cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/recovery.img .
+        cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/recovery.img twrp-$DEVICE.img
       '''
       archiveArtifacts artifacts: '*'
       sh '''#!/bin/bash
