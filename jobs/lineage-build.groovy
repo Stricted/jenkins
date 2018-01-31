@@ -140,10 +140,10 @@ node("build"){
       else {
         sh '''#!/bin/bash
           set -e
-          if [ $OTA = 'true' ]; then
-            cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/lineage-$VERSION-* .
-          else
+          if [ $BOOT_IMG_ONLY = 'true' ]; then
             cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/boot.img .
+          else
+            cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/lineage-$VERSION-* .
           fi
         '''
         archiveArtifacts artifacts: '*'
