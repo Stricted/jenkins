@@ -2,7 +2,7 @@ String calcDate() { ['date', '+%Y%m%d'].execute().text.trim()}
 
 def BUILD_TREE  = "/home/build/android/lineage/" + VERSION
 def CCACHE_DIR  = "/home/build/.ccache"
-def CERTS_DIR   = "/home/buildtest/.android-certs"
+def CERTS_DIR   = "/home/build/.android-certs"
 
 def basejobname = DEVICE + '-' + VERSION + '-' + calcDate() + '-' + BUILD_TYPE
 
