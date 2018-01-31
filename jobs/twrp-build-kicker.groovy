@@ -5,6 +5,8 @@ String getDevices() { ['curl', '-s', 'https://raw.githubusercontent.com/Stricted
 def jsonParse(def json) { new groovy.json.JsonSlurperClassic().parseText(json) }
 
 node("master"){
+timestamps {
+stage('Start Builds'){
   def json = jsonParse(getDevices())
   for(int i = 0; i < json.size(); i++) {
     echo "Kicking off a build for ${json[i].device}"
@@ -15,4 +17,6 @@ node("master"){
     ], propagate: false, wait: false
     sleep 2
   }
+}
+}
 }

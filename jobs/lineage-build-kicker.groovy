@@ -8,6 +8,8 @@ def global_repopick_nums = null
 def global_repopick_tops = null
 
 node("master"){
+timestamps {
+stage('Start Builds'){
   def json = jsonParse(getDevices())
   for(int i = 0; i < json.size(); i++) {
     if(json[i].device == "GLOBAL") {
@@ -33,4 +35,6 @@ node("master"){
     ], propagate: false, wait: false
     sleep 2
   }
+}
+}
 }
