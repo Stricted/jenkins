@@ -1,5 +1,13 @@
 [
 	{
+		"device": "a3xelte",
+		"version": "8.1",
+	},
+	{
+		"device": "a5xelte",
+		"version": "8.1",
+	},
+	{
 		"device": "s5neolte",
 		"version": "8.1",
 	}
