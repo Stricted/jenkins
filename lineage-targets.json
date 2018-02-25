@@ -4,14 +4,6 @@
 		"repopick_tops": ""
 	},
 	{
-		"device": "serranoltexx",
-		"version": "14.1",
-		"build_type": "userdebug",
-		"with_su": "true",
-		"with_dexpreopt": "false",
-		"with_oms": "false"
-	},
-	{
 		"device": "s5neoltexx",
 		"version": "14.1",
 		"build_type": "userdebug",
