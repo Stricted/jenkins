@@ -2,13 +2,5 @@
 	{
 		"device": "GLOBAL",
 		"repopick_tops": ""
-	},
-	{
-		"device": "s5neoltexx",
-		"version": "14.1",
-		"build_type": "userdebug",
-		"with_su": "false",
-		"with_dexpreopt": "false",
-		"with_oms": "false"
 	}
 ]
