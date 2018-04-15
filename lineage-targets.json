@@ -1,6 +1,13 @@
 [
 	{
 		"device": "GLOBAL",
+		"repopick_nums": "206140,208327",
 		"repopick_tops": ""
+	},
+	{
+		"device": "s5neoltexx",
+		"version": "15.1",
+		"build_type": "userdebug",
+		"ota": "false"
 	}
 ]
