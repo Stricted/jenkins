@@ -112,13 +112,9 @@ node("build") {
 		stage('Upload') {
 			if(OTA == 'true') {
 				sh '''#!/bin/bash
-					if [ $OTA = 'true' ]; then
-						zipname=$(find '''+BUILD_TREE+'''/out/target/product/$DEVICE/ -name 'lineage-'$VERSION'-*.zip' -type f -printf "%f\\n")
-						ssh web52@stricted.net mkdir -p /var/www/web52/htdocs/lineageos/$DEVICE/
-						scp '''+BUILD_TREE+'''/out/target/product/$DEVICE/$zipname web52@stricted.net:/var/www/web52/htdocs/lineageos/$DEVICE/
-					else
-						echo "Skipping as this is not a production build. Artifacts will be available in Jenkins"
-					fi
+					zipname=$(find '''+BUILD_TREE+'''/out/target/product/$DEVICE/ -name 'lineage-'$VERSION'-*.zip' -type f -printf "%f\\n")
+					ssh web52@stricted.net mkdir -p /var/www/web52/htdocs/lineageos/$DEVICE/
+					scp '''+BUILD_TREE+'''/out/target/product/$DEVICE/$zipname web52@stricted.net:/var/www/web52/htdocs/lineageos/$DEVICE/
 				'''
 			}
 			else {
