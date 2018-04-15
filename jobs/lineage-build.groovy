@@ -16,9 +16,6 @@ node("build") {
 		} else {
 			currentBuild.displayName = basejobname + '-priv'
 		}
-		if(BOOT_IMG_ONLY == 'true') {
-			OTA = false
-		}
 		stage('Input manifest') {
 			sh '''#!/bin/bash
 				cd '''+BUILD_TREE+'''
@@ -87,18 +84,9 @@ node("build") {
 				export USE_CCACHE=1
 				export CCACHE_COMPRESS=1
 				export CCACHE_DIR='''+CCACHE_DIR+'''
+				export ANDROID_COMPILE_WITH_JACK=false
 				lunch lineage_$DEVICE-$BUILD_TYPE || lunch cm_$DEVICE-$BUILD_TYPE
-				./prebuilts/sdk/tools/jack-admin list-server && ./prebuilts/sdk/tools/jack-admin kill-server
-				rm -rf ~/.jack*
-				./prebuilts/sdk/tools/jack-admin install-server ./prebuilts/sdk/tools/jack-launcher.jar ./prebuilts/sdk/tools/jack-server-*.jar
-				export JACK_SERVER_VM_ARGUMENTS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx6g"
-				./prebuilts/sdk/tools/jack-admin start-server
-				if [ $BOOT_IMG_ONLY = 'true' ]; then
-					mka bootimage
-				else
-					mka bacon
-				fi
-				./prebuilts/sdk/tools/jack-admin list-server && ./prebuilts/sdk/tools/jack-admin kill-server
+				mka bacon
 			'''
 		}
 		stage('Sign build') {
@@ -136,11 +124,7 @@ node("build") {
 			else {
 				sh '''#!/bin/bash
 					set -e
-					if [ $BOOT_IMG_ONLY = 'true' ]; then
-						cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/boot.img .
-					else
-						cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/lineage-$VERSION-* .
-					fi
+					cp '''+BUILD_TREE+'''/out/target/product/$DEVICE/lineage-$VERSION-* .
 				'''
 				archiveArtifacts artifacts: '*'
 				sh '''#!/bin/bash
