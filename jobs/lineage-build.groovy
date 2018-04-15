@@ -132,19 +132,5 @@ node("build") {
 				'''
 			}
 		}
-		stage('Add to updater') {
-			withCredentials([string(credentialsId: '16c4643c-0dfb-4f0d-ad8a-54acccae6785', variable: 'UPDATER_API_KEY')]) {
-				sh '''#!/bin/bash
-					cd '''+BUILD_TREE+'''/out/target/product/$DEVICE
-					if [ $OTA = 'true' ]; then
-						LineageUpdaterURL="https://lineage.stricted.net"
-						DownloadBaseURL="https://images.stricted.net/lineageos"
-						zipname=$(find -name "lineage-$VERSION-*.zip" -type f -printf '%f\n')
-						md5sum=$(md5sum $zipname)
-						curl -H "Apikey: $UPDATER_API_KEY" -H "Content-Type: application/json" -X POST -d '{ "device": "'"$DEVICE"'", "filename": "'"$zipname"'", "md5sum": "'"${md5sum:0:32}"'", "romtype": "unofficial", "url": "'"$DownloadBaseURL/$DEVICE/$zipname"'", "version": "'"$VERSION"'" }' "$LineageUpdaterURL/api/v1/add_build"
-					fi
-				'''
-			}
-		}
 	}
 }
