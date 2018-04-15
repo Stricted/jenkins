@@ -27,7 +27,6 @@ node("master") {
 					string(name: 'GLOBAL_REPOPICK_NUMBERS', value: (global_repopick_nums == null) ? "" : global_repopick_nums),
 					string(name: 'GLOBAL_REPOPICK_TOPICS', value: (global_repopick_tops == null) ? "" : global_repopick_tops),
 					string(name: 'WITH_SU', value: (json[i].with_su == null) ? "false" : json[i].with_su),
-					string(name: 'WITH_DEXPREOPT', value: (json[i].with_dexpreopt == null) ? "false" : json[i].with_dexpreopt),
 					string(name: 'OTA', value: (json[i].ota == null) ? "true" : json[i].ota),
 					string(name: 'SIGNED', value: (json[i].signed == null) ? "false" : json[i].signed),
 					string(name: 'SIGNED_BACKUPTOOL', value: (json[i].signed_backuptool == null) ? "true" : json[i].signed_backuptool),
