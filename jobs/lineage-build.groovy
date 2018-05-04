@@ -84,9 +84,20 @@ node("build") {
 				export USE_CCACHE=1
 				export CCACHE_COMPRESS=1
 				export CCACHE_DIR='''+CCACHE_DIR+'''
-				export ANDROID_COMPILE_WITH_JACK=false
+				if [[ $VERSION = '14.1' ]]; then
+					./prebuilts/sdk/tools/jack-admin list-server && ./prebuilts/sdk/tools/jack-admin kill-server
+					rm -rf ~/.jack*
+					./prebuilts/sdk/tools/jack-admin install-server ./prebuilts/sdk/tools/jack-launcher.jar ./prebuilts/sdk/tools/jack-server-*.jar
+					export JACK_SERVER_VM_ARGUMENTS="-Dfile.encoding=UTF-8 -XX:+TieredCompilation -Xmx6g"
+					./prebuilts/sdk/tools/jack-admin start-server
+				else
+					export ANDROID_COMPILE_WITH_JACK=false
+				fi
 				lunch lineage_$DEVICE-$BUILD_TYPE || lunch cm_$DEVICE-$BUILD_TYPE
 				mka bacon
+				if [[ $VERSION = '14.1' ]]; then
+					./prebuilts/sdk/tools/jack-admin list-server && ./prebuilts/sdk/tools/jack-admin kill-server
+				fi
 			'''
 		}
 		stage('Sign build') {
