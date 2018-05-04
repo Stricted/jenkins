@@ -64,6 +64,9 @@ node("build") {
 				else
 					echo "No repopick topics chosen"
 				fi
+				if [ -f device/*/$DEVICE/patches/patch.sh ]; then
+					device/*/$DEVICE/patches/patch.sh
+				fi
 			'''
 		}
 		stage('Clean') {
