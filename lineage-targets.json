@@ -8,5 +8,10 @@
 		"device": "s5neoltexx",
 		"version": "15.1",
 		"build_type": "userdebug"
+	},
+	{
+		"device": "ttab",
+		"version": "14.1",
+		"build_type": "userdebug"
 	}
 ]
