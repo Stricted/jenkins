@@ -127,8 +127,10 @@ node("build") {
 			if(OTA == 'true') {
 				sh '''#!/bin/bash
 					zipname=$(find '''+BUILD_TREE+'''/out/target/product/$DEVICE/ -name 'lineage-'$VERSION'-*.zip' -type f -printf "%f\\n")
-					ssh web52@stricted.net mkdir -p /var/www/web52/htdocs/lineageos/$DEVICE/
+					ssh web52@stricted.net "mkdir -p /var/www/web52/htdocs/lineageos/$DEVICE/"
 					scp '''+BUILD_TREE+'''/out/target/product/$DEVICE/$zipname web52@stricted.net:/var/www/web52/htdocs/lineageos/$DEVICE/
+					ssh web52@stricted.net "cd /var/www/web52/htdocs/lineageos/$DEVICE/ && sha256sum $zipname > $zipname.sha256sum"
+					ssh web52@stricted.net "php priv/gen_builds_json.php"
 				'''
 			}
 			else {
